@@ -16,7 +16,8 @@
     "report": "playwright show-report",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test:smoke:chromium": "playwright test --grep @smoke --project=chromium"
+    "test:smoke:chromium": "playwright test --grep @smoke --project=chromium",
+    "test:api:chromium": "playwright test tests/api --project=chromium"
   },
   "keywords": [],
   "author": "",

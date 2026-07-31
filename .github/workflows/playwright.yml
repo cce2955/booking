@@ -37,8 +37,8 @@ jobs:
       - name: Type-check project
         run: npm run typecheck
 
-      - name: Run Chromium API and UI tests
-        run: npx playwright test tests/api tests/ui --project=chromium
+      - name: Run Chromium API, UI, and integration tests
+        run: npx playwright test tests/api tests/ui tests/integration --project=chromium
 
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
@@ -47,3 +47,4 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+

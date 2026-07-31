@@ -1,35 +1,20 @@
-import { expect, test } from '@playwright/test';
-
-import { BookingApiClient } from '../../clients/BookingApiClient';
-import { createUniqueBookingData } from '../../data/test-data-factory';
+import {
+  expect,
+  test,
+} from '../../fixtures/test-fixtures';
 
 test.describe('Booking API lifecycle', () => {
   test('@smoke creates, retrieves, and deletes a booking', async ({
-    request,
+    bookingApi,
+    authToken,
+    bookingData,
   }) => {
-    const bookingApi = new BookingApiClient(request);
-
-    const token = await test.step(
-      'Authenticate with the booking service',
-      async () => {
-        const authToken = await bookingApi.authenticate();
-        const validation =
-          await bookingApi.validateToken(authToken);
-
-        expect(validation.valid).toBe(true);
-
-        return authToken;
-      },
-    );
-
-    const generatedData = createUniqueBookingData();
-
     const availableRooms = await test.step(
       'Find an available room for the generated dates',
       async () => {
         const rooms = await bookingApi.getAvailableRooms(
-          generatedData.bookingdates.checkin,
-          generatedData.bookingdates.checkout,
+          bookingData.bookingdates.checkin,
+          bookingData.bookingdates.checkout,
         );
 
         expect(
@@ -44,7 +29,7 @@ test.describe('Booking API lifecycle', () => {
     const selectedRoom = availableRooms.rooms[0];
 
     const booking = {
-      ...generatedData,
+      ...bookingData,
       roomid: selectedRoom.roomid,
     };
 
@@ -78,31 +63,29 @@ test.describe('Booking API lifecycle', () => {
       contentType: 'application/json',
     });
 
-    try {
-      await test.step(
-        'Retrieve and verify persisted booking values',
-        async () => {
-          const retrieved = await bookingApi.getBooking(
-            created.bookingid,
-            token,
-          );
-
-          expect(retrieved).toMatchObject({
-            roomid: booking.roomid,
-            firstname: booking.firstname,
-            lastname: booking.lastname,
-            depositpaid: booking.depositpaid,
-            bookingdates: booking.bookingdates,
-          });
-        },
-      );
-    } finally {
-      await test.step('Delete the created booking', async () => {
-        await bookingApi.deleteBooking(
+    await test.step(
+      'Retrieve and verify persisted booking values',
+      async () => {
+        const retrieved = await bookingApi.getBooking(
           created.bookingid,
-          token,
+          authToken,
         );
-      });
-    }
+
+        expect(retrieved).toMatchObject({
+          roomid: booking.roomid,
+          firstname: booking.firstname,
+          lastname: booking.lastname,
+          depositpaid: booking.depositpaid,
+          bookingdates: booking.bookingdates,
+        });
+      },
+    );
+
+    await test.step('Delete the created booking', async () => {
+      await bookingApi.deleteBooking(
+        created.bookingid,
+        authToken,
+      );
+    });
   });
 });

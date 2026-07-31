@@ -130,6 +130,14 @@ export class HomePage {
     return this.roomCards.first();
   }
 
+  public roomCardById(roomId: number): Locator {
+    return this.roomCards.filter({
+      has: this.page.locator(
+        `a[href^="/reservation/${roomId}"]`,
+      ),
+    });
+  }
+
   public async openFirstAvailableRoom(): Promise<string> {
     const roomCard = this.firstAvailableRoom();
 
@@ -257,3 +265,4 @@ export class HomePage {
     return `Choose ${formattedDate}`;
   }
 }
+

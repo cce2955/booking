@@ -18,6 +18,7 @@ export class ReservationPage {
   public readonly phoneInput: Locator;
   public readonly confirmationHeading: Locator;
   public readonly returnHomeLink: Locator;
+  public readonly validationAlert: Locator;
 
   private readonly bookingForm: Locator;
 
@@ -55,6 +56,13 @@ export class ReservationPage {
       name: 'Return home',
       exact: true,
     });
+
+    this.validationAlert = this.bookingForm
+      .locator('.alert')
+      .filter({
+        hasText: 'Firstname should not be blank',
+      })
+      .first();
   }
 
   public async open(
@@ -69,10 +77,12 @@ export class ReservationPage {
   }
 
   public roomHeading(roomType: string): Locator {
-    return this.page.getByRole('heading', {
-      name: `${roomType} Room`,
-      exact: true,
-    }).first();
+    return this.page
+      .getByRole('heading', {
+        name: `${roomType} Room`,
+        exact: true,
+      })
+      .first();
   }
 
   public confirmationDates(
@@ -88,10 +98,12 @@ export class ReservationPage {
   }
 
   public async showGuestForm(): Promise<void> {
-    await this.page.getByRole('button', {
-      name: 'Reserve Now',
-      exact: true,
-    }).click();
+    await this.page
+      .getByRole('button', {
+        name: 'Reserve Now',
+        exact: true,
+      })
+      .click();
 
     await this.firstnameInput.waitFor({
       state: 'visible',
@@ -114,10 +126,12 @@ export class ReservationPage {
         response.request().method() === 'POST',
     );
 
-    await this.bookingForm.getByRole('button', {
-      name: 'Reserve Now',
-      exact: true,
-    }).click();
+    await this.bookingForm
+      .getByRole('button', {
+        name: 'Reserve Now',
+        exact: true,
+      })
+      .click();
 
     return responsePromise;
   }

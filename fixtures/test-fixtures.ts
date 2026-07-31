@@ -13,6 +13,14 @@ type QaFixtures = {
   bookingData: BookingData;
 };
 
+function formatFutureDate(daysFromToday: number): string {
+  const date = new Date();
+  date.setUTCHours(12, 0, 0, 0);
+  date.setUTCDate(date.getUTCDate() + daysFromToday);
+
+  return date.toISOString().slice(0, 10);
+}
+
 export const test = base.extend<QaFixtures>({
   authToken: async ({ request }, use) => {
     const client = new BookingApiClient(request);
@@ -54,8 +62,17 @@ export const test = base.extend<QaFixtures>({
     }
   },
 
-  bookingData: async ({}, use) => {
-    await use(createUniqueBookingData());
+  bookingData: async ({}, use, testInfo) => {
+    const checkinOffset = 1 + testInfo.workerIndex * 4;
+
+    await use(
+      createUniqueBookingData({
+        bookingdates: {
+          checkin: formatFutureDate(checkinOffset),
+          checkout: formatFutureDate(checkinOffset + 2),
+        },
+      }),
+    );
   },
 });
 

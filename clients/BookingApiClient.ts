@@ -10,6 +10,7 @@ import type {
   CreatedBooking,
   RetrievedBooking,
   RoomsResponse,
+  UpdatedBookingResponse,
 } from '../data/booking-data';
 
 export class BookingApiClient {
@@ -125,6 +126,28 @@ export class BookingApiClient {
     return response.json() as Promise<RetrievedBooking>;
   }
 
+
+  public async updateBooking(
+    bookingId: number,
+    booking: BookingData,
+    token: string,
+  ): Promise<UpdatedBookingResponse> {
+    const response = await this.request.put(
+      `/api/booking/${bookingId}`,
+      {
+        headers: this.authHeaders(token),
+        data: booking,
+      },
+    );
+
+    await this.requireStatus(
+      response,
+      200,
+      `update booking ${bookingId}`,
+    );
+
+    return response.json() as Promise<UpdatedBookingResponse>;
+  }
   public async deleteBooking(
     bookingId: number,
     token: string,
@@ -200,4 +223,6 @@ export class BookingApiClient {
     );
   }
 }
+
+
 

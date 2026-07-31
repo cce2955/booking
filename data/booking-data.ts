@@ -64,7 +64,9 @@ export type AuthLoginResponse = {
   token: string;
 };
 
-export type RetrievedBooking = BookingData & {
+export type RetrievedBooking = CreatedBooking;
+
+export type UpdatedBookingResponse = {
+  booking: RetrievedBooking;
   bookingid: number;
 };
-

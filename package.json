@@ -1,14 +1,37 @@
 {
-  "name": "playwright",
+  "name": "booking",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test tests/ui",
+    "test:api": "playwright test tests/api",
+    "test:integration": "playwright test tests/integration",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:regression": "playwright test --grep @regression",
+    "test:chromium": "playwright test --project=chromium",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui-mode": "playwright test --ui",
+    "report": "playwright show-report",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test:smoke:chromium": "playwright test --grep @smoke --project=chromium"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Playwright checks for booking workflows across the UI and API.",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.0",
-    "@types/node": "^26.1.2"
-  }
+    "@types/node": "^26.1.2",
+    "eslint": "^10.8.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.65.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  },
+  "private": "true"
 }
